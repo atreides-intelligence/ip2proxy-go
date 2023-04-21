@@ -1,5 +1,5 @@
-module github.com/ip2location/ip2proxy-go/v4
+module github.com/atreides-intelligence/ip2proxy-go
 
-go 1.14
+go 1.20
 
-require lukechampine.com/uint128 v1.2.0
+require lukechampine.com/uint128 v1.3.0

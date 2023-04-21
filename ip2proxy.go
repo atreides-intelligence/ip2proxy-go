@@ -10,12 +10,13 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"lukechampine.com/uint128"
 	"math/big"
 	"net"
 	"os"
 	"strconv"
 	"unsafe"
+
+	"lukechampine.com/uint128"
 )
 
 // Implement db reader interface
@@ -328,6 +329,28 @@ func OpenDB(dbPath string) (*DB, error) {
 	}
 
 	return OpenDBWithReader(f)
+}
+
+type ByteDBReader struct {
+	*bytes.Reader
+}
+
+func (bdr *ByteDBReader) Close() error {
+	return nil
+}
+
+// OpenDBFromBytes use a byte slice to open the IP2Proxy BIN database file. It will read all the metadata required to
+// be able to extract the embedded geolocation data, and return the underlining DB object.
+func OpenDBWithBytes(data []byte) (*DB, error) {
+	if data == nil {
+		return nil, errors.New("data cannot be nil")
+	}
+
+	byteReader := &ByteDBReader{
+		Reader: bytes.NewReader(data),
+	}
+
+	return OpenDBWithReader(byteReader)
 }
 
 // OpenDBWithReader takes a dbReader to the IP2Proxy BIN database file. It will read all the metadata required to
